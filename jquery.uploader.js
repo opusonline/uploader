@@ -33,8 +33,9 @@
 		);
 	},
 	_checkProgressSupport = function() {
-		var $test = $('<progress/>')[0];
-		progress_support = 'value' in $test;
+		var $test = $('<progress/>').appendTo('body');
+		progress_support = 'value' in $test[0];
+		$test.remove(); // workaround for polyfill DOMNodeInserted event
 	},
 	_formatSize = function(bytes) {
 		bytes = parseFloat(bytes);
@@ -77,14 +78,18 @@
 				var name = file.fileName || file.name,
 				size = file.fileSize || file.size,
 				type = file.fileType || file.type,
+				start_time,
 				
 				$info = _createStatusFields(name, size),
 				
 				_showProgress = function(event) {
 					if (event.lengthComputable) {
-						var percent = Math.round((event.loaded / event.total) * 100);
-						$info.percent.html(percent + '%');
+						var percent = Math.round((event.loaded / event.total) * 100),
+						seconds = (new Date().getTime() - start_time) / 1000,
+						average = _formatSize(event.loaded / seconds) + '/s';
 						if ($info.progress) $info.progress.val(percent);
+						$info.percent.html(percent + '%');
+						$info.bandwidth.html('(' + average + ')');
 						options.onProgress.call($info.list, name, event.loaded, event.total);
 					}
 				},
@@ -113,12 +118,14 @@
 					$info.list.addClass('upload-failed');
 					$info.abort.hide();
 					$info.percent.hide();
+					$info.bandwidth.hide();
 					if ($info.progress) $info.progress.hide();
 				},
 				_uploadSuccess = function() {
 					$info.list.addClass('upload-success');
 					$info.abort.hide();
 					$info.percent.hide();
+					$info.bandwidth.hide();
 					if ($info.progress) $info.progress.hide();
 				},
 				xhr = new XMLHttpRequest();
@@ -143,6 +150,7 @@
 				
 				try {
 					xhr.send(file);
+					start_time = new Date().getTime();
 				} catch (exception) {
 					_uploadFailed();
 					options.onError.call($info.list, name, exception.message);
@@ -173,21 +181,28 @@
 					$status = $('<span class="upload-status"/>'),
 					$file = $('<span class="upload-file">' + name + '</span>'),
 					$size = $('<span class="upload-size"' + display + '>' + size + '</span>'),
-					$percent = $('<span class="upload-percent"' + display + '/>'),
-					$abort = $('<input type="button" class="upload-abort"' + display + ' value="abort"/>')
+					$abort = $('<input type="button" class="upload-abort"' + display + ' value="abort"/>'),
+					'<br/>'
 				).appendTo($filelist);
 				if (xhr_support && progress_support) {
-					$list.append('<br/>', $progress =  $('<progress max="100"/>'));
+					$list.append(
+						$progress =  $('<progress max="100"/>')
+					);
 				}
+				$list.append(
+					$percent = $('<span class="upload-percent"' + display + '/>'),
+					$bandwidth = $('<span class="upload-bandwidth"' + display + '/>')
+				);
 				
 				return {
 					list: $list,
 					status: $status,
 					file: $file,
 					size: $size,
-					percent: $percent,
 					abort: $abort,
-					progress: $progress
+					progress: $progress,
+					percent: $percent,
+					bandwidth: $bandwidth
 				};
 			},
 			_showDropzone = function(event) {

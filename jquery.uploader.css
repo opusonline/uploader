@@ -1,0 +1,57 @@
+.upload-button {
+	width: 4em;
+	padding: 0.5em 1em;
+	color: #fff;
+	border: 0 none;
+	border-bottom: 1px solid #ddd;
+	background: #800;
+}
+.upload-button:hover {
+	background: #c00;
+}
+.upload-dropzone {
+	border: 3px dashed #000;
+	background: #ffffa2;
+}
+.upload-dropzone.active {
+	background: #e00;
+}
+.upload-file, .upload-size, .upload-abort, .upload-percent, .upload-bandwidth {
+	margin-left: 0.5em;
+}
+.upload-status {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	vertical-align: bottom;
+	background: url(indicator.gif) no-repeat center;
+}
+.upload-list {
+	list-style: none;
+	margin-left: 0;
+	padding-left: 0;
+}
+.upload-size, .upload-bandwidth {
+	font-size: 82%;
+}
+.upload-success .upload-status {
+	background-image: url(tick.png);
+}
+.upload-failed .upload-status {
+	background: url(cross.png);
+}
+.upload-abort {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	line-height: 16px;
+	font-size: 16px;
+	text-indent: -9999px;
+	border: 0 none;
+	cursor: pointer;
+	vertical-align: bottom;
+	background: url(delete.png) no-repeat center;
+}
+.upload-list progress {
+	margin-left: 22px;
+}

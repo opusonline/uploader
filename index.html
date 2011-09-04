@@ -3,54 +3,15 @@
 
 <head>
 <title>Upload with progress bar</title>
+<!--
+http://leaverou.me/polyfills/progress/
+https://github.com/LeaVerou/HTML5-Progress-polyfill
+<link rel="stylesheet" href="progress-polyfill.css" />
+-->
+<link rel="stylesheet" href="jquery.uploader.css" />
 <style>
 body {
 	font: small arial;
-}
-.upload-button {
-	width: 4em;
-	padding: 0.5em 1em;
-	color: #fff;
-	border: 0 none;
-	border-bottom: 1px solid #ddd;
-	background: #800;
-}
-.upload-button:hover {
-	background: #c00;
-}
-.upload-dropzone {
-	border: 3px dashed #000;
-	background: #ffffa2;
-}
-.upload-dropzone.active {
-	background: #e00;
-}
-.upload-file, .upload-size, .upload-percent, .upload-abort {
-	margin-left: 0.5em;
-}
-.upload-status {
-	display: inline-block;
-	width: 16px;
-	height: 16px;
-	vertical-align: bottom;
-	background: url(indicator.gif) no-repeat center;
-}
-.upload-list {
-	list-style: none;
-	margin-left: 0;
-	padding-left: 0;
-}
-.upload-success .upload-status {
-	background-image: url(tick.png);
-}
-.upload-failed .upload-status {
-	background: url(cross.png);
-}
-.upload-size {
-	font-size: smaller;
-}
-.upload-list progress {
-	margin-left: 22px;
 }
 </style>
 </head>
@@ -59,6 +20,11 @@ body {
 
 <div id="upload"></div>
 
+<!--
+http://leaverou.me/polyfills/progress/
+https://github.com/LeaVerou/HTML5-Progress-polyfill
+<script src="progress-polyfill.min.js"></script>
+-->
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script src="jquery.uploader.min.js"></script>
 <script>
