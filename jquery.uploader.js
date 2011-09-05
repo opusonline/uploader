@@ -14,6 +14,7 @@
 		multiple: true,
 		buttonText: 'Upload',
 		eventNamespace: 'uploader',
+		bandwidthInterval: 1000, // ms
 		onSubmit: function(name) {},
 		onProgress: function(name, loaded, total) {},
 		onComplete: function(name, response) {},
@@ -78,18 +79,23 @@
 				var name = file.fileName || file.name,
 				size = file.fileSize || file.size,
 				type = file.fileType || file.type,
-				start_time,
+				start_time, last_loaded = 0,
 				
 				$info = _createStatusFields(name, size),
 				
 				_showProgress = function(event) {
 					if (event.lengthComputable) {
-						var percent = Math.round((event.loaded / event.total) * 100),
-						seconds = (new Date().getTime() - start_time) / 1000,
-						average = _formatSize(event.loaded / seconds) + '/s';
+						var percent = Math.round((event.loaded / event.total) * 100);
+						var bandwidth = 'n/a';
+						var now = new Date().getTime();
+						if ((now - start_time) >= options.bandwidthInterval) {
+							bandwidth = _formatSize((event.loaded - last_loaded) / ((now - start_time) / 1000)) + '/s';
+							start_time = now;
+							last_loaded = event.loaded;
+							$info.bandwidth.html('(' + bandwidth + ')');
+						}
 						if ($info.progress) $info.progress.val(percent);
 						$info.percent.html(percent + '%');
-						$info.bandwidth.html('(' + average + ')');
 						options.onProgress.call($info.list, name, event.loaded, event.total);
 					}
 				},
